@@ -13,6 +13,7 @@ export default defineFakeRoute([
             type: "bilibili",
             remark: "测试标题",
             url: "https://live.bilibili.com/123",
+            enable: true,
             time_range: "01:00:00-02:00:00",
             format: null,
             segment_processor: [
@@ -41,17 +42,17 @@ export default defineFakeRoute([
             },
             // 全局参数覆写
             override: [
-              { key: "submit_api", value: "abc" },
-              { key: "lines", value: "qqq" }
+              { key: "downloader", value: "streamlink" },
+              { key: "file_size", value: "50000" }
             ],
             filters: [
               {
-                key: "title",
+                key: "room_title",
                 operator: "not contains",
                 value: "b",
                 logic: "and"
               },
-              { key: "area", operator: "equals", value: "c", logic: "or" }
+              { key: "live_area", operator: "equals", value: "c", logic: "or" }
             ]
           },
 
@@ -60,6 +61,7 @@ export default defineFakeRoute([
             type: "douyin",
             remark: "测试标题2",
             url: "https://www.douyin.com/follow/live/123",
+            enable: false,
             time_range: "01:00:00-02:00:00",
             format: null,
             segment_processor: [
@@ -85,13 +87,28 @@ export default defineFakeRoute([
               current_status: "recording", //  values: "waiting", "recording", "uploading", "disabled"
               upload_speed: 0, // Speed in kb/s (int)
               download_speed: 0 // Speed in kb/s (int)
-            }
+            },
+            // 全局参数覆写
+            override: [
+              { key: "downloader", value: "streamlink" },
+              { key: "file_size", value: "50000" }
+            ],
+            filters: [
+              {
+                key: "room_title",
+                operator: "not contains",
+                value: "b",
+                logic: "and"
+              },
+              { key: "live_area", operator: "equals", value: "c", logic: "or" }
+            ]
           },
           {
             id: 3,
             type: "huya",
             remark: "测试标题3",
             url: "https://www.huya.com/347185",
+            enable: true,
             time_range: "01:00:00-02:00:00",
             format: null,
             segment_processor: [
@@ -99,11 +116,7 @@ export default defineFakeRoute([
                 run: "echo 2"
               }
             ],
-            postprocessor: [
-              { cmd: "rm", value: "" },
-              { cmd: "mv", value: "echo 4" },
-              { cmd: "run", value: "echo 5" }
-            ],
+            postprocessor: [{ cmd: "rm", value: "" }],
             filename_prefix: null,
             preprocessor: [
               {
@@ -121,13 +134,27 @@ export default defineFakeRoute([
               current_status: "uploading", //  values: "waiting", "recording", "uploading", "disabled"
               upload_speed: 0, // Speed in kb/s (int)
               download_speed: 0 // Speed in kb/s (int)
-            }
+            },
+            // 全局参数覆写
+            override: [
+              { key: "downloader", value: "streamlink" },
+              { key: "file_size", value: "50000" }
+            ],
+            filters: [
+              {
+                key: "room_title",
+                operator: "not contains",
+                value: "b",
+                logic: "and"
+              },
+              { key: "live_area", operator: "equals", value: "c", logic: "or" }
+            ]
           },
           {
             id: 4,
             type: "douyu",
             remark: "测试标题4",
-            url: "https://www.douyu.com/347185",
+            enable: true,
             time_range: "01:00:00-02:00:00",
             format: null,
             segment_processor: [
@@ -153,7 +180,21 @@ export default defineFakeRoute([
               current_status: "disabled", //  values: "waiting", "recording", "uploading", "disabled"
               upload_speed: 0, // Speed in kb/s (int)
               download_speed: 0 // Speed in kb/s (int)
-            }
+            },
+            // 全局参数覆写
+            override: [
+              { key: "downloader", value: "streamlink" },
+              { key: "file_size", value: "50000" }
+            ],
+            filters: [
+              {
+                key: "room_title",
+                operator: "not contains",
+                value: "b",
+                logic: "and"
+              },
+              { key: "live_area", operator: "equals", value: "c", logic: "or" }
+            ]
           }
         ]
       };

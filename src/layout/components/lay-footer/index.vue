@@ -11,7 +11,7 @@ const TITLE = getConfig("Title");
     Copyright © 2025-present
     <a
       class="hover:text-primary"
-      href="https://github.com/pure-admin"
+      href="https://github.com/biliup"
       target="_blank"
     >
       &nbsp;{{ TITLE }}

@@ -2,17 +2,14 @@
 import { ref, watch } from "vue";
 import type { FormInstance } from "element-plus";
 import { ElMessage } from "element-plus";
-import { id } from "element-plus/es/locale/index.mjs";
+import { enableCache } from "@iconify/vue/dist/iconify.js";
 
 // 模拟下拉框的投稿模板选项，实际可从接口获取
 const UPLOAD_TEMPLATE_OPTIONS = [
-  { label: "模板A", value: "id_a" },
-  { label: "模板B", value: "id_b" },
-  { label: "模板C", value: "id_c" }
+  { label: "模板A", value: 1 },
+  { label: "模板B", value: 2 },
+  { label: "模板C", value: 3 }
 ];
-
-// 预设值用于选择框
-const ENUM_KEYS = ["key1", "key2", "key3"]; // 这里可以替换为实际的枚举值
 
 const OVERRIDE_OPTIONS = [
   {
@@ -69,7 +66,8 @@ const formData = ref({
   id: 0,
   remark: "",
   url: "",
-  upload_id: "",
+  enable: true,
+  upload_id: 0,
   postprocessor: [{ cmd: "rm", value: "" }],
   format: "flv",
   filename_prefix: "",
@@ -111,7 +109,8 @@ watch(
       id: newData.id || 0,
       remark: newData.remark || "",
       url: newData.url || "",
-      upload_id: newData.upload_id || "",
+      enable: newData.enable || true,
+      upload_id: newData.upload_id || 0,
       postprocessor:
         newData.postprocessor?.length > 0
           ? [...newData.postprocessor]
@@ -136,7 +135,8 @@ function initFormData() {
     id: props.data?.id || 0,
     remark: props.data?.remark || "",
     url: props.data?.url || "",
-    upload_id: props.data?.upload_id || "",
+    enable: props.data.enable || true,
+    upload_id: props.data?.upload_id || 0,
     postprocessor:
       props.data?.postprocessor?.length > 0
         ? [...props.data.postprocessor]
@@ -278,6 +278,15 @@ function removeFilter(index: number) {
         />
       </el-form-item>
 
+      <!-- 是否启用 -->
+      <el-form-item label="是否启用" prop="enable">
+        <el-switch
+          v-model="formData.enable"
+          active-text="启用"
+          inactive-text="禁用"
+        />
+      </el-form-item>
+
       <!-- 投稿模板 -->
       <el-form-item label="投稿模板" prop="upload_id">
         <el-select
@@ -307,7 +316,7 @@ function removeFilter(index: number) {
             v-for="(item, index) in formData.postprocessor"
             :key="index"
             :gutter="10"
-            style="margin-top: 10px; display: flex; align-items: center"
+            style="display: flex; align-items: center; margin-top: 10px"
           >
             <el-col :span="item.cmd === 'rm' ? 20 : 10">
               <el-select v-model="item.cmd" style="width: 100%">
@@ -391,7 +400,7 @@ function removeFilter(index: number) {
             v-for="(item, index) in formData.preprocessor"
             :key="index"
             :gutter="10"
-            style="margin-top: 10px; display: flex; align-items: center"
+            style="display: flex; align-items: center; margin-top: 10px"
           >
             <el-col :span="20">
               <el-input
@@ -431,7 +440,7 @@ function removeFilter(index: number) {
             v-for="(item, index) in formData.segment_processor"
             :key="index"
             :gutter="10"
-            style="margin-top: 10px; display: flex; align-items: center"
+            style="display: flex; align-items: center; margin-top: 10px"
           >
             <el-col :span="20">
               <el-input
@@ -474,7 +483,7 @@ function removeFilter(index: number) {
             v-for="(item, index) in formData.downloaded_processor"
             :key="index"
             :gutter="10"
-            style="margin-top: 10px; display: flex; align-items: center"
+            style="display: flex; align-items: center; margin-top: 10px"
           >
             <el-col :span="20">
               <el-input
@@ -516,7 +525,7 @@ function removeFilter(index: number) {
             v-for="(arg, index) in formData.opt_args"
             :key="index"
             :gutter="10"
-            style="margin-top: 10px; display: flex; align-items: center"
+            style="display: flex; align-items: center; margin-top: 10px"
           >
             <el-col :span="20">
               <el-input
@@ -552,7 +561,7 @@ function removeFilter(index: number) {
             v-for="(item, index) in formData.override"
             :key="index"
             :gutter="10"
-            style="margin-top: 10px; display: flex; align-items: center"
+            style="display: flex; align-items: center; margin-top: 10px"
           >
             <el-col :span="10">
               <el-select
@@ -629,7 +638,7 @@ function removeFilter(index: number) {
             v-for="(filter, index) in formData.filters"
             :key="index"
             :gutter="10"
-            style="margin-top: 10px; display: flex; align-items: center"
+            style="display: flex; align-items: center; margin-top: 10px"
           >
             <el-col :span="6">
               <el-select
@@ -702,8 +711,8 @@ function removeFilter(index: number) {
 <style lang="scss">
 .form-container {
   max-height: 70vh;
-  overflow: auto;
   padding-right: 8px;
+  overflow: auto;
 }
 
 .array-header {
