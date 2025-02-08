@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { getStreamersList, createStreamers, deleteStreamers } from "@/api/list";
+import {
+  getStreamersList,
+  createStreamers,
+  deleteStreamers
+} from "@/api/streamers";
+
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
 import { ref, onMounted, nextTick } from "vue";
@@ -78,9 +83,7 @@ const handleDeleteItem = product => {
 };
 const handleManageProduct = product => {
   formDialogVisible.value = true;
-  nextTick(() => {
-    formData.value = { ...product };
-  });
+  formData.value = { ...product };
 };
 
 const handkeOk = product => {

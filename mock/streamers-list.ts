@@ -154,7 +154,8 @@ export default defineFakeRoute([
             id: 4,
             type: "douyu",
             remark: "测试标题4",
-            enable: true,
+            url: "https://www.douyu.com/123444",
+            enable: false,
             time_range: "01:00:00-02:00:00",
             format: null,
             segment_processor: [

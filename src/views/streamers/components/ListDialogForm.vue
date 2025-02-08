@@ -2,14 +2,15 @@
 import { ref, watch } from "vue";
 import type { FormInstance } from "element-plus";
 import { ElMessage } from "element-plus";
-import { enableCache } from "@iconify/vue/dist/iconify.js";
+
+import { getUploadersList } from "@/api/uploaders";
 
 // 模拟下拉框的投稿模板选项，实际可从接口获取
-const UPLOAD_TEMPLATE_OPTIONS = [
-  { label: "模板A", value: 1 },
-  { label: "模板B", value: 2 },
-  { label: "模板C", value: 3 }
-];
+// const UPLOAD_TEMPLATE_OPTIONS = [
+//   { label: "模板A", value: 1 },
+//   { label: "模板B", value: 2 },
+//   { label: "模板C", value: 3 }
+// ];
 
 const OVERRIDE_OPTIONS = [
   {
@@ -67,7 +68,7 @@ const formData = ref({
   remark: "",
   url: "",
   enable: true,
-  upload_id: 0,
+  upload_id: null,
   postprocessor: [{ cmd: "rm", value: "" }],
   format: "flv",
   filename_prefix: "",
@@ -79,6 +80,9 @@ const formData = ref({
   override: [],
   filters: []
 });
+
+// 投稿模板选项
+const UPLOAD_TEMPLATE_OPTIONS = ref<{ label: string; value: number }[]>([]);
 
 // 必填提示
 const requiredMsg = "该项为必填项";
@@ -96,6 +100,7 @@ watch(
     formVisible.value = newVal;
     if (newVal) {
       initFormData();
+      loadUploaders();
     }
   }
 );
@@ -109,8 +114,8 @@ watch(
       id: newData.id || 0,
       remark: newData.remark || "",
       url: newData.url || "",
-      enable: newData.enable || true,
-      upload_id: newData.upload_id || 0,
+      enable: newData.enable === false ? false : true,
+      upload_id: newData.upload_id || null,
       postprocessor:
         newData.postprocessor?.length > 0
           ? [...newData.postprocessor]
@@ -131,12 +136,13 @@ watch(
 
 // 初始化表单数据
 function initFormData() {
+  // console.log("初始化表单数据", props.data);
   formData.value = {
     id: props.data?.id || 0,
     remark: props.data?.remark || "",
     url: props.data?.url || "",
-    enable: props.data.enable || true,
-    upload_id: props.data?.upload_id || 0,
+    enable: props.data.enable === false ? false : true,
+    upload_id: props.data?.upload_id || null,
     postprocessor:
       props.data?.postprocessor?.length > 0
         ? [...props.data.postprocessor]
@@ -152,6 +158,24 @@ function initFormData() {
     filters: props.data?.filters || []
   };
 }
+
+// 获取投稿模板列表
+const loadUploaders = async () => {
+  try {
+    const response = await getUploadersList();
+    if (response.success) {
+      // 更新 UPLOAD_TEMPLATE_OPTIONS 数据
+      UPLOAD_TEMPLATE_OPTIONS.value = response.data.map(item => ({
+        label: item.template_name, // 显示为模板名称
+        value: item.id // 使用 id 作为值
+      }));
+    } else {
+      ElMessage.error("获取投稿模板失败");
+    }
+  } catch (error) {
+    ElMessage.error("网络请求失败");
+  }
+};
 
 // 提交
 function handleSubmit() {
